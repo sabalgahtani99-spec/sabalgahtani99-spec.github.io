@@ -1,0 +1,44 @@
+name: Publish educational reports
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Prepare report files
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p public
+          for part in 00 01 02; do
+            curl --fail --location --retry 3 "https://madrasati-jeddah-1448-2026.sabalgahtani99.chatgpt.site/files/github-pages/site-data.part${part}" --output "site-data.part${part}"
+          done
+          cat site-data.part00 site-data.part01 site-data.part02 > websites.tar.xz
+          echo "afece18c337b43faede17bdb295301211b32eb58d9b833edcd6e3a1ea20eb028  websites.tar.xz" | sha256sum --check
+          tar -xJf websites.tar.xz -C public
+          test -f public/index.html
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload website
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: public
+      - name: Publish website
+        id: deployment
+        uses: actions/deploy-pages@v4
