@@ -21,6 +21,10 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Read portal updates
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Prepare report files
         shell: bash
         run: |
@@ -35,6 +39,7 @@ jobs:
           curl --fail --location --retry 3 "https://madrasati-jeddah-1448-2026.sabalgahtani99.chatgpt.site/files/github-pages/latest-reports.tar.xz" --output latest-reports.tar.xz
           echo "dcd1fbd3c8662d8a8047d025b7676f69a560e5dc534b1e7d12c4238f2235d741  latest-reports.tar.xz" | sha256sum --check
           tar -xJf latest-reports.tar.xz -C public
+          cp -R overrides/. public/
           test -f public/madrasati/thursday/index.html
           test -f public/index.html
       - name: Configure Pages
