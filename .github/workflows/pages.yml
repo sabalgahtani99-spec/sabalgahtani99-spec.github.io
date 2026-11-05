@@ -40,6 +40,7 @@ jobs:
           echo "dcd1fbd3c8662d8a8047d025b7676f69a560e5dc534b1e7d12c4238f2235d741  latest-reports.tar.xz" | sha256sum --check
           tar -xJf latest-reports.tar.xz -C public
           cp -R overrides/. public/
+          while IFS= read -r -d '' script; do node --check "$script"; done < <(find public -name '*.js' -print0)
           test -f public/madrasati/thursday/index.html
           test -f public/index.html
       - name: Configure Pages
