@@ -29,6 +29,8 @@ def caption(path, text):
         return COLLECTIONS[path.parts[0]]
     if len(path.parts) == 3 and path.parts[0] == 'madrasati':
         slug = path.parts[1]
+        if slug == 'brief':
+            slug = 'sunday-brief'
         if slug.startswith('interventions-') and slug.split('-', 1)[1] in DATES:
             return 'تقرير متابعة مدارس التدخلات العاجلة — ' + DATES[slug.split('-', 1)[1]]
         day = slug.removesuffix('-brief')
@@ -70,7 +72,10 @@ def report_list():
     days = []
     for day, date in DATES.items():
         assert (ROOT / 'madrasati' / day / 'index.html').is_file(), 'Missing daily report: ' + day
-        rows = report_row(day, 'التقرير الكامل') + report_row(day + '-brief', 'التقرير المختصر')
+        brief_slug = day + '-brief'
+        if day == 'sunday' and not (ROOT / 'madrasati' / brief_slug / 'index.html').is_file():
+            brief_slug = 'brief'
+        rows = report_row(day, 'التقرير الكامل') + report_row(brief_slug, 'التقرير المختصر')
         days.append('<section class="portal-day" data-day="' + day + '"><h2>' + escape(date) + '</h2><div>' + rows + '</div></section>')
     extra = '<nav class="portal-related" aria-label="الإحصاءات والمقارنات">'
     for path, title in [('statistics', 'إحصائية منصة مدرستي'), ('comparison', 'مقارنة التقارير')]:
