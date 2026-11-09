@@ -95,7 +95,7 @@ def report_list():
     return '<section id="portal-report-list" class="portal-report-library"><h2>التقارير</h2><div class="portal-report-grid">' + ''.join(cards) + '</div></section>'
 
 assert (ROOT / 'index.html').is_file()
-archive_markup = report_list()
+archive_markup = report_list() + "<section id=\"external-evaluation-reports\" class=\"portal-report-library\"><h2>التقويم الخارجي</h2><div class=\"portal-report-grid\"><article class=\"portal-report\"><a href=\"/external-evaluation/visits-1448/\"><h3>تقرير حصر زيارات التقويم الخارجي للفصل الدراسي الأول 1448</h3></a><button type=\"button\" class=\"portal-copy\" data-report-title=\"تقرير حصر زيارات التقويم الخارجي للفصل الدراسي الأول 1448\" data-report-url=\"/external-evaluation/visits-1448/\">نسخ رابط التقرير</button></article></div></section>"
 count = 0
 for file in ROOT.rglob('*.html'):
     relative = file.relative_to(ROOT)
